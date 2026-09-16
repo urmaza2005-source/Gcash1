@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Send Money via GCash</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #dceeff 0%,
+                    #f5f9ff 42%,
+                    #eef3f8 100%
+                );
+
+            color: #172033;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 24px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        /* Main Card */
+
+        .card {
+            background: rgba(255, 255, 255, 0.96);
+
+            border: 1px solid rgba(255, 255, 255, 0.8);
+
+            border-radius: 28px;
+
+            padding: 28px 22px 24px;
+
+            box-shadow:
+                0 20px 60px rgba(27, 67, 114, 0.12),
+                0 4px 16px rgba(27, 67, 114, 0.06);
+
+            backdrop-filter: blur(12px);
+
+            animation: cardIn 0.45s ease-out;
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .logo {
+            width: 58px;
+            height: 58px;
+
+            margin: 0 auto 14px;
+
+            border-radius: 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: linear-gradient(
+                135deg,
+                #087cff,
+                #005ce6
+            );
+
+            color: white;
+
+            font-size: 25px;
+            font-weight: 800;
+
+            box-shadow:
+                0 10px 25px rgba(0, 102, 255, 0.22);
+        }
+
+        h1 {
+            font-size: 25px;
+            line-height: 1.2;
+            font-weight: 750;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            margin-top: 7px;
+
+            color: #6c7789;
+
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* QR Section */
+
+        .qr-section {
+            background: #f7faff;
+
+            border: 1px solid #e4edf8;
+
+            border-radius: 22px;
+
+            padding: 18px;
+
+            text-align: center;
+
+            margin-bottom: 18px;
+        }
+
+        .qr-wrapper {
+            background: white;
+
+            border-radius: 18px;
+
+            padding: 14px;
+
+            display: inline-flex;
+
+            box-shadow:
+                0 5px 18px rgba(20, 55, 90, 0.08);
+        }
+
+        .qr {
+            display: block;
+
+            width: min(100%, 275px);
+            height: auto;
+
+            border-radius: 8px;
+        }
+
+        .qr-label {
+            margin-top: 13px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            color: #78869a;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.7px;
+        }
+
+        /* Recipient */
+
+        .recipient {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 15px;
+
+            background: #f8fafc;
+
+            border: 1px solid #e8edf3;
+
+            border-radius: 16px;
+
+            margin-bottom: 18px;
+        }
+
+        .recipient-icon {
+            width: 40px;
+            height: 40px;
+
+            flex-shrink: 0;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #e8f2ff;
+
+            font-size: 19px;
+        }
+
+        .recipient-info {
+            min-width: 0;
+        }
+
+        .recipient-title {
+            display: block;
+
+            font-size: 11px;
+
+            color: #7b8797;
+
+            font-weight: 600;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.5px;
+
+            margin-bottom: 3px;
+        }
+
+        .recipient-name {
+            display: block;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: #202a3a;
+
+            word-break: break-word;
+        }
+
+        /* Buttons */
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+
+            margin-bottom: 22px;
+        }
+
+        .button {
+            width: 100%;
+
+            min-height: 52px;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            text-decoration: none;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease,
+                background 0.15s ease;
+
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .button:active {
+            transform: scale(0.98);
+        }
+
+        .primary {
+            color: white;
+
+            background: linear-gradient(
+                135deg,
+                #087cff,
+                #0064e8
+            );
+
+            box-shadow:
+                0 9px 22px rgba(0, 108, 240, 0.22);
+        }
+
+        .primary:hover {
+            box-shadow:
+                0 12px 27px rgba(0, 108, 240, 0.28);
+        }
+
+        .secondary {
+            color: #1268d9;
+
+            background: #edf5ff;
+
+            border: 1px solid #d9eaff;
+        }
+
+        .secondary:hover {
+            background: #e5f0ff;
+        }
+
+        .button-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        /* Instructions */
+
+        .instructions {
+            border-top: 1px solid #e8edf3;
+
+            padding-top: 20px;
+        }
+
+        .instructions-title {
+            font-size: 14px;
+
+            font-weight: 750;
+
+            margin-bottom: 12px;
+        }
+
+        .step {
+            display: flex;
+
+            gap: 11px;
+
+            margin-bottom: 11px;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .number {
+            width: 23px;
+            height: 23px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background: #edf5ff;
+
+            color: #0875ee;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+        .step-text {
+            font-size: 13px;
+
+            color: #697688;
+
+            line-height: 1.5;
+
+            padding-top: 1px;
+        }
+
+        .step-text strong {
+            color: #2a3444;
+        }
+
+        /* Footer */
+
+        .footer {
+            text-align: center;
+
+            margin-top: 18px;
+
+            font-size: 11px;
+
+            color: #8b96a5;
+        }
+
+        /* Small phones */
+
+        @media (max-width: 360px) {
+            body {
+                padding: 14px 10px;
+            }
+
+            .card {
+                padding: 22px 16px 20px;
+                border-radius: 23px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .qr-section {
+                padding: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <section class="card">
+
+            <!-- Header -->
+
+            <header class="header">
+
+                <div class="logo">
+                    ₱
+                </div>
+
+                <h1>
+                    Send Money via GCash
+                </h1>
+
+                <p class="subtitle">
+                    Scan or save the QR code to send money directly.
+                </p>
+
+            </header>
+
+
+            <!-- QR Code -->
+
+            <section class="qr-section">
+
+                <div class="qr-wrapper">
+
+                    <img
+                        src="gcash-qr.png"
+                        alt="GCash QR Code"
+                        class="qr"
+                    >
+
+                </div>
+
+                <p class="qr-label">
+                    GCash Personal QR
+                </p>
+
+            </section>
+
+
+            <!-- Recipient -->
+
+            <div class="recipient">
+
+                <div class="recipient-icon">
+                    👤
+                </div>
+
+                <div class="recipient-info">
+
+                    <span class="recipient-title">
+                        Recipient
+                    </span>
+
+                    <span class="recipient-name">
+                        Bryan Leoben Soco Urmaza
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="actions">
+
+                <!-- Open GCash -->
+
+                <a
+                    class="button primary"
+                    href="gcash://"
+                >
+
+                    <span class="button-icon">
+                        ₱
+                    </span>
+
+                    Open GCash
+
+                </a>
+
+
+                <!-- Save QR -->
+
+                <a
+                    class="button secondary"
+                    href="gcash-qr.png"
+                    download="GCash-QR.png"
+                >
+
+                    <span class="button-icon">
+                        ↓
+                    </span>
+
+                    Save QR Photo
+
+                </a>
+
+            </div>
+
+
+            <!-- Instructions -->
+
+            <section class="instructions">
+
+                <h2 class="instructions-title">
+                    How to send
+                </h2>
+
+
+                <div class="step">
+
+                    <span class="number">
+                        1
+                    </span>
+
+                    <p class="step-text">
+                        Tap <strong>Open GCash</strong> if the app is installed.
+                    </p>
+
+                </div>
+
+
+                <div class="step">
+
+                    <span class="number">
+                        2
+                    </span>
+
+                    <p class="step-text">
+                        Or tap <strong>Save QR Photo</strong> and save the QR to your phone.
+                    </p>
+
+                </div>
+
+
+                <div class="step">
+
+                    <span class="number">
+                        3
+                    </span>
+
+                    <p class="step-text">
+                        In GCash, open <strong>QR</strong> and upload the saved QR.
+                    </p>
+
+                </div>
+
+
+                <div class="step">
+
+                    <span class="number">
+                        4
+                    </span>
+
+                    <p class="step-text">
+                        Enter the <strong>amount</strong>, review the details, and send.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+            <p class="footer">
+                Securely send to the recipient shown above.
+            </p>
+
+        </section>
+
+    </main>
+
+</body>
+</html>
